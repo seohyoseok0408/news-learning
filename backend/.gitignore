@@ -1,0 +1,124 @@
+# ===============================
+# 기본 제공 템플릿 (IntelliJ, Java, macOS, Windows, VSCode 등)
+# ===============================
+
+# IntelliJ 관련 설정 파일
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/dictionaries
+.idea/**/shelf
+.idea/**/aws.xml
+.idea/**/contentModel.xml
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+.idea/**/gradle.xml
+.idea/**/libraries
+.idea/**/mongoSettings.xml
+.idea/replstate.xml
+.idea/sonarlint/
+.idea/httpRequests
+.idea/caches/build_file_checksums.ser
+.idea/**/sonarIssues.xml
+.idea/**/markdown-navigator*
+.idea/$CACHE_FILE$
+.idea/codestream.xml
+.idea/**/azureSettings.xml
+.idea_modules/
+atlassian-ide-plugin.xml
+
+# Gradle 관련
+.gradle/
+build/
+out/
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+
+# Java 컴파일 산출물
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+replay_pid*
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+*.icloud
+
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.history/
+.ionide
+*.vsix
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# ===============================
+# 커스텀 추가 항목
+# ===============================
+
+# 환경 설정 및 민감한 정보
+.env
+.env.*
+*.key
+*.pem
+
+# application 설정
+# application.yml 은 버전관리, dev/prod 등은 제외
+application-dev.yml
+src/main/resources/application-dev.yml
+application-prod.yml
+src/main/resources/application-prod.yml
+!application.yml
+!src/main/resources/application.yml
+
+# Gradle 빌드 산출물
+**/build/
+**/.gradle/
+
+# 테스트 임시 디렉토리
+tmp/
