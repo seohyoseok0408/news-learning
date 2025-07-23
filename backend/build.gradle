@@ -24,7 +24,7 @@ repositories {
 }
 
 dependencies {
-	// Spring Web (REST API 개발용)
+	// Spring Web
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 
 	// Spring Data JPA
@@ -34,12 +34,18 @@ dependencies {
 	// implementation 'org.springframework.boot:spring-boot-starter-security'
 	// testImplementation 'org.springframework.security:spring-security-test'
 
-	// Lombok (코드 축약용 - getter/setter 자동 생성 등)
+	// Lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
 
-	// MySQL 드라이버 
+	// MySQL JDBC Driver
 	runtimeOnly 'com.mysql:mysql-connector-j'
+
+	// Springdoc OpenAPI
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.2.0'
+
+	// Validation API
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
 	// 테스트용 의존성
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
