@@ -1,0 +1,138 @@
+# ===============================
+# 시스템/에디터/IDE 관련
+# ===============================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+*.icloud
+
+# Windows
+Thumbs.db
+ehthumbs.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msp
+*.lnk
+
+# VSCode
+.vscode/
+.history/
+.ionide
+
+# IntelliJ
+.idea/
+*.iml
+out/
+
+# ===============================
+# 패키지 관리자
+# ===============================
+node_modules/
+.pnpm-debug.log*
+.yarn*
+.yarnrc.yml
+.npm/
+
+# ===============================
+# Expo / React Native
+# ===============================
+.expo/
+.expo-shared/
+*.expo
+*.expo.*
+__generated__/
+android/
+ios/
+build/
+*.apk
+*.aab
+*.keystore
+*.jks
+
+# Android Studio/Gradle
+.gradle/
+local.properties
+captures/
+output.json
+.externalNativeBuild/
+.cxx/
+*.hprof
+
+# Xcode
+xcuserdata/
+*.xccheckout
+*.xcscmblueprint
+
+# Buck
+.buckd/
+buck-out/
+.buckconfig.local
+
+# ===============================
+# 캐시, 로그, 테스트 등
+# ===============================
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+coverage/
+*.tsbuildinfo
+.cache/
+.parcel-cache/
+dist/
+web_modules/
+.next/
+.nuxt/
+out/
+lib-cov/
+.nyc_output/
+.rpt2_cache/
+.rts2_cache_*
+.fusebox/
+.docusaurus/
+.serverless/
+.dynamodb/
+.tern-port
+.vscode-test
+
+# ===============================
+# 빌드 산출물 및 임시 파일
+# ===============================
+*.tgz
+*.gz
+*.zip
+*.tar
+*.tmp
+*.bak
+*.backup.*
+*.back.*
+
+# ===============================
+# 설정 파일 및 민감 정보
+# ===============================
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# ===============================
+# TypeScript 전용
+# ===============================
+*.tsbuildinfo
+
