@@ -25,13 +25,14 @@ public class ArticleController {
 
     private final ArticleService articleService;
 
-    @Operation(summary = "기사 목록 조회", description = "카테고리 및 커서를 기반으로 기사 목록을 무한스크롤 방식으로 조회합니다.")
+    @Operation(summary = "기사 목록 조회", description = "카테고리, 검색어, 커서를 기반으로 기사 목록을 무한스크롤 방식으로 조회합니다.")
     @GetMapping
     public ResponseEntity<ApiResponse<ArticleScrollResponseDto>> getArticles(
         @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime cursorPublishedAt,
         @RequestParam(defaultValue = "10") int size,
-        @RequestParam(required = false) String category) {
-        ArticleScrollResponseDto response = articleService.getArticles(category, cursorPublishedAt, size);
+        @RequestParam(required = false) String category, 
+        @RequestParam(required = false) String keyword) {
+        ArticleScrollResponseDto response = articleService.getArticles(keyword, category, cursorPublishedAt, size);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 }

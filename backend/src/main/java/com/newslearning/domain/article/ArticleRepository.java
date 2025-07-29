@@ -18,4 +18,11 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
 
     // 특정 카테고리에서 커서를 기준으로 이전 기사들을 조회.
     Slice<Article> findByCategoryAndPublishedAtLessThanOrderByPublishedAtDesc(Article.Category category, LocalDateTime publishedAt, Pageable pageable);
+
+    // 검색어로 기사 제목을 포함하는 기사들을 커서 없이 처음부터 조회.
+    Slice<Article> findByTitleContainingIgnoreCaseOrderByPublishedAtDesc(String keyword, Pageable pageable);
+
+    // 검색어로 기사 제목을 포함하고, 커서를 기준으로 이전 기사들을 조회.
+    Slice<Article> findByTitleContainingIgnoreCaseAndPublishedAtLessThanOrderByPublishedAtDesc(String keyword, LocalDateTime publishedAt, Pageable pageable);
+
 }
