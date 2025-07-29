@@ -14,8 +14,10 @@ import com.newslearning.domain.article.dto.ArticleScrollResponseDto;
 import com.newslearning.global.response.ApiResponse;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
+@Tag(name = "Article", description = "뉴스 기사 API")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/articles")
@@ -23,12 +25,13 @@ public class ArticleController {
 
     private final ArticleService articleService;
 
-    @Operation(summary = "기사 목록 조회", description = "publishedAt 기준 내림차순 커서 기반 무한스크롤용 기사 목록을 반환합니다.")
+    @Operation(summary = "기사 목록 조회", description = "카테고리 및 커서를 기반으로 기사 목록을 무한스크롤 방식으로 조회합니다.")
     @GetMapping
     public ResponseEntity<ApiResponse<ArticleScrollResponseDto>> getArticles(
         @RequestParam(required = false) @DateTimeFormat(iso = ISO.DATE_TIME) LocalDateTime cursorPublishedAt,
-        @RequestParam(defaultValue = "10") int size) {
-        ArticleScrollResponseDto response = articleService.getArticles(cursorPublishedAt, size);
+        @RequestParam(defaultValue = "10") int size,
+        @RequestParam(required = false) String category) {
+        ArticleScrollResponseDto response = articleService.getArticles(category, cursorPublishedAt, size);
         return ResponseEntity.ok(ApiResponse.success(response));
     }
 }

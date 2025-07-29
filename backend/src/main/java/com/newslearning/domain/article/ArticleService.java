@@ -20,14 +20,25 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     
     // 커서 기반 무한 스크롤을 위한 기사 목록 조회
-    public ArticleScrollResponseDto getArticles(LocalDateTime cursorPublishedAt, int size) {
+    public ArticleScrollResponseDto getArticles(String category, LocalDateTime cursorPublishedAt, int size) {
         Pageable pageable = PageRequest.of(0, size);
 
-        // 커서가 null이면 최신 기사부터 조회, 있으면 해당 시각 이전 기사부터 조회
-        Slice<Article> slice = (cursorPublishedAt == null)
-            ? articleRepository.findAllByOrderByPublishedAtDesc(pageable)
-            : articleRepository.findByPublishedAtLessThanOrderByPublishedAtDesc(cursorPublishedAt, pageable);
+        Slice<Article> slice;
 
+        // 카테고리 조건이 있는 경우
+        if (category != null) {
+            Article.Category cat = Article.Category.valueOf(category.toUpperCase());
+            slice = (cursorPublishedAt == null)
+                ? articleRepository.findByCategoryOrderByPublishedAtDesc(cat, pageable)
+                : articleRepository.findByCategoryAndPublishedAtLessThanOrderByPublishedAtDesc(cat, cursorPublishedAt, pageable);
+        } else {
+            // 전체 카테고리 대상 조회
+            slice = (cursorPublishedAt == null)
+                ? articleRepository.findAllByOrderByPublishedAtDesc(pageable)
+                : articleRepository.findByPublishedAtLessThanOrderByPublishedAtDesc(cursorPublishedAt, pageable);
+
+        }
+        
         List<ArticleResponseDto> dtoList = slice.getContent().stream()
             .map(ArticleResponseDto::from)
             .toList();
