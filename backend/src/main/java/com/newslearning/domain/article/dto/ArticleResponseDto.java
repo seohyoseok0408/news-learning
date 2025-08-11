@@ -2,9 +2,9 @@ package com.newslearning.domain.article.dto;
 
 import java.time.LocalDateTime;
 
-import com.newslearning.domain.article.Article;
+import com.newslearning.domain.article.entity.Article;
 
-public record ArticleResponseDto(
+public record ArticleResponseDTO(
     Long id,
     String title,
     String imageUrl,
@@ -12,8 +12,8 @@ public record ArticleResponseDto(
     String reporter,
     LocalDateTime publishedAt
 ) {
-    public static ArticleResponseDto from(Article article) {
-        return new ArticleResponseDto(
+    public static ArticleResponseDTO from(Article article) {
+        return new ArticleResponseDTO(
             article.getId(),
             article.getTitle(),
             article.getImageUrl(),

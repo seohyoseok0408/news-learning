@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import com.newslearning.domain.article.entity.Article;
+
 public interface ArticleRepository extends JpaRepository<Article, Long> {
     // 커서 없이 첫 페이지를 조회할 때 사용
     Slice<Article> findAllByOrderByPublishedAtDesc(Pageable pageable);

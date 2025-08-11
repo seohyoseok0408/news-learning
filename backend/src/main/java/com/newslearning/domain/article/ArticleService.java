@@ -9,8 +9,11 @@ import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.newslearning.domain.article.dto.ArticleResponseDto;
-import com.newslearning.domain.article.dto.ArticleScrollResponseDto;
+import com.newslearning.domain.article.dto.ArticleDetailResponseDTO;
+import com.newslearning.domain.article.dto.ArticleResponseDTO;
+import com.newslearning.domain.article.dto.ArticleScrollResponseDTO;
+import com.newslearning.domain.article.entity.Article;
+import com.newslearning.domain.hanja.HanjaService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,10 +22,11 @@ import lombok.RequiredArgsConstructor;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+    private final HanjaService hanjaService;
     
     // 커서 기반 무한 스크롤을 위한 기사 목록 조회
     @Transactional(readOnly = true)
-    public ArticleScrollResponseDto getArticles(String keyword, String category, LocalDateTime cursorPublishedAt, int size) {
+    public ArticleScrollResponseDTO getArticles(String keyword, String category, LocalDateTime cursorPublishedAt, int size) {
         Pageable pageable = PageRequest.of(0, size);
 
         Slice<Article> slice;
@@ -48,8 +52,8 @@ public class ArticleService {
 
         }
         
-        List<ArticleResponseDto> dtoList = slice.getContent().stream()
-            .map(ArticleResponseDto::from)
+        List<ArticleResponseDTO> dtoList = slice.getContent().stream()
+            .map(ArticleResponseDTO::from)
             .toList();
 
         // 다음 페이지 요청 시 기준이 되는 커서 값
@@ -57,6 +61,17 @@ public class ArticleService {
             ? dtoList.get(dtoList.size() - 1).publishedAt()
             : null;
 
-        return new ArticleScrollResponseDto(dtoList, slice.hasNext(), nextCursorPublishedAt);
+        return new ArticleScrollResponseDTO(dtoList, slice.hasNext(), nextCursorPublishedAt);
+    }
+
+    // 특정 기사 상세 조회
+    @Transactional(readOnly = true)
+    public ArticleDetailResponseDTO getArticleDetail(Long articleId) {
+        Article article = articleRepository.findById(articleId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 ID의 기사가 존재하지 않습니다. id=" + articleId));
+
+        // 버전별 한자어만 묶어서 응답 (퀴즈는 제외)
+        var hanjaByVersion = hanjaService.findGroupedByVersion(articleId);
+        return ArticleDetailResponseDTO.of(article, hanjaByVersion);
     }
 }

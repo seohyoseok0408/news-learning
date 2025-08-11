@@ -1,4 +1,4 @@
-package com.newslearning.domain.article;
+package com.newslearning.domain.article.entity;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
