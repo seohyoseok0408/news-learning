@@ -21,6 +21,7 @@ public class ArticleDetailResponseDTO {
     private String mediaName;
     private String imageUrl;
     private Map<SummaryVersion, SummaryBlock> summaries;
+    private List<ArticleTeaserDTO> more; 
 
     @Getter @AllArgsConstructor @NoArgsConstructor
     public static class SummaryBlock {
@@ -28,9 +29,16 @@ public class ArticleDetailResponseDTO {
         private List<HanjaDTO> hanjaWords; 
     }
 
+    public record ArticleTeaserDTO(Long id, String title) {
+        public static ArticleTeaserDTO from(Article a) {
+            return new ArticleTeaserDTO(a.getId(), a.getTitle());
+        }
+    }
+
     public static ArticleDetailResponseDTO of(
         Article article,
-        Map<SummaryVersion, List<Hanja>> hanjaByVersion
+        Map<SummaryVersion, List<Hanja>> hanjaByVersion,
+        List<ArticleTeaserDTO> more 
     ) {
         Map<SummaryVersion, SummaryBlock> map = new EnumMap<>(SummaryVersion.class);
 
@@ -53,7 +61,8 @@ public class ArticleDetailResponseDTO {
             article.getReporter(),
             article.getMediaName(),
             article.getImageUrl(),
-            map
+            map,
+            more == null ? List.of() : more
         );
     }
 }

@@ -89,7 +89,12 @@ public class ArticleService {
 
         // 버전별 한자어만 묶어서 응답 (퀴즈는 제외)
         var hanjaByVersion = hanjaService.findGroupedByVersion(articleId);
-        return ArticleDetailResponseDTO.of(article, hanjaByVersion);
+        
+        var teasers = articleRepository
+            .findTop3ByCategoryAndIdNotOrderByPublishedAtDesc(article.getCategory(), article.getId())
+            .stream().map(ArticleDetailResponseDTO.ArticleTeaserDTO::from).toList();
+
+        return ArticleDetailResponseDTO.of(article, hanjaByVersion, teasers);
     }
 
     /**
