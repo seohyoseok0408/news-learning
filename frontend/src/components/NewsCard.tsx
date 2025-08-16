@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import styles from './NewsCard.styles';
+import { useNavigation } from '@react-navigation/native';
 
 interface NewsItem {
     id: number;
@@ -17,8 +18,14 @@ interface NewsCardProps {
 }
 
 export default function NewsCard({ news }: NewsCardProps) {
+    const navigation = useNavigation<any>(); // 임시로 any 타입 사용
+
+    const handlePress = () => {
+        navigation.navigate('ArticleDetail', { articleId: news.id });
+    };
+
     return (
-        <TouchableOpacity style={styles.container}>
+        <TouchableOpacity style={styles.container} onPress={handlePress}>
             <Image source={news.imageUrl} style={styles.image} />
             
             <View style={styles.content}>
