@@ -1,5 +1,6 @@
 package com.newslearning.domain.article.dto;
 
+import java.time.LocalDateTime;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ public class ArticleDetailResponseDTO {
     private String reporter;
     private String mediaName;
     private String imageUrl;
+    private LocalDateTime publishedAt;  
     private Map<SummaryVersion, SummaryBlock> summaries;
     private List<ArticleTeaserDTO> more; 
 
@@ -61,6 +63,7 @@ public class ArticleDetailResponseDTO {
             article.getReporter(),
             article.getMediaName(),
             article.getImageUrl(),
+            article.getPublishedAt(), 
             map,
             more == null ? List.of() : more
         );
