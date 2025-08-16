@@ -9,6 +9,7 @@ import {
     StatusBar 
 } from 'react-native';
 import styles from './ArticleDetailScreen.styles';
+import { useNavigation } from '@react-navigation/native';
 
 // 요약 수준 타입 정의 (백엔드와 맞춤)
 type SummaryLevel = '원문' | '짧음' | '중간';
@@ -92,6 +93,9 @@ export default function ArticleDetailScreen() {
     const [isSaved, setIsSaved] = useState(false);
     const [currentSummaryLevel, setCurrentSummaryLevel] = useState<SummaryLevel>('중간');  // 기본값 "중간"
 
+    const navigation = useNavigation<any>();
+
+    
     const handleSummaryLevelChange = () => {
         // 요약 수준을 순환으로 변경
         setCurrentSummaryLevel((prevLevel) => {
@@ -116,9 +120,9 @@ export default function ArticleDetailScreen() {
     };
 
     const handleQuiz = () => {
-        // 퀴즈 버튼 로직
-        console.log('퀴즈 시작');
+        navigation.navigate('Quiz');
     };
+
 
     const handleSave = () => {
         // 저장 버튼 로직
@@ -130,6 +134,8 @@ export default function ArticleDetailScreen() {
         // 관련 기사 클릭 로직
         console.log('관련 기사 클릭:', articleId);
     };
+
+    
 
     return (
         <SafeAreaView style={styles.container}>
