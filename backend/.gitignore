@@ -32,13 +32,6 @@
 .idea_modules/
 atlassian-ide-plugin.xml
 
-# Gradle 관련
-.gradle/
-build/
-out/
-!gradle-wrapper.jar
-!gradle-wrapper.properties
-
 # Java 컴파일 산출물
 *.class
 *.jar
@@ -50,6 +43,13 @@ out/
 *.rar
 hs_err_pid*
 replay_pid*
+
+# Gradle 관련 
+.gradle/
+build/
+out/
+!gradle-wrapper.jar
+!gradle-wrapper.properties
 
 # macOS
 .DS_Store
