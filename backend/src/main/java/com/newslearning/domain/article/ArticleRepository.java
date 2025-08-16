@@ -1,6 +1,7 @@
 package com.newslearning.domain.article;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -27,4 +28,6 @@ public interface ArticleRepository extends JpaRepository<Article, Long> {
     // 검색어로 기사 제목을 포함하고, 커서를 기준으로 이전 기사들을 조회.
     Slice<Article> findByTitleContainingIgnoreCaseAndPublishedAtLessThanOrderByPublishedAtDesc(String keyword, LocalDateTime publishedAt, Pageable pageable);
 
+    // 동일 카테고리 최신 3개 (현재 글 제외)
+    List<Article> findTop3ByCategoryAndIdNotOrderByPublishedAtDesc(Article.Category category, Long excludeId);
 }
