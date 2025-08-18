@@ -20,6 +20,21 @@ public class UserController {
 		this.userService = userService;
 	}
 	
+	@GetMapping("/social-login")
+   public ResponseEntity<String> callback(
+           @RequestParam(name = "code") String code,
+           @RequestParam(name = "state", required = false) String state,
+           @RequestParam(name = "error", required = false) String error,
+           @RequestParam(name = "error_description", required = false) String errorDesc) {
+
+       if (error != null) {
+           return ResponseEntity.badRequest()
+                   .body("naver error=" + error + ", desc=" + errorDesc);
+       }
+       return ResponseEntity.ok("code=" + code + ", state=" + state);
+   }
+
+
 	// 내정보 확인
 	@GetMapping("/user/myInfo")
 	public ResponseEntity<ApiResponse<UserDTO>> myInfo() {

@@ -17,13 +17,16 @@ import com.newslearning.domain.article.entity.Article;
 import com.newslearning.domain.hanja.Hanja;
 import com.newslearning.domain.hanja.HanjaRepository;
 import com.newslearning.domain.hanja.HanjaService;
+import com.newslearning.domain.keyword.match.KeywordMatchEngine;
 import com.newslearning.domain.quiz.Quiz;
 import com.newslearning.domain.quiz.QuizRepository;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ArticleService {
@@ -32,15 +35,8 @@ public class ArticleService {
     private final HanjaService hanjaService;
     private final HanjaRepository hanjaRepository;
     private final QuizRepository quizRepository;
+    private final KeywordMatchEngine matchEngine;
 
-    @Getter
-    @AllArgsConstructor
-    public static class IngestResult {
-        private Long articleId;
-        private int hanjaInserted;
-        private int quizInserted;
-    }
-    
     // 커서 기반 무한 스크롤을 위한 기사 목록 조회
     @Transactional(readOnly = true)
     public ArticleScrollResponseDTO getArticles(String keyword, String category, LocalDateTime cursorPublishedAt, int size) {
@@ -103,7 +99,7 @@ public class ArticleService {
      * 유니크 제약 위반 시 DataIntegrityViolationException 발생 가능.
      */
     @Transactional
-    public IngestResult addArticle(ArticleRequestDTO req) {
+    public void addArticle(ArticleRequestDTO req) {
         // 0) 타임스탬프 기본값
         LocalDateTime createdTs = LocalDateTime.now();
 
@@ -158,6 +154,14 @@ public class ArticleService {
             }
         }
 
-        return new IngestResult(article.getId(), hanjaCnt, quizCnt);
+        // 3) 명사 기반 유저 키워드 매칭
+        var hits = matchEngine.matchByNouns(req.getNouns());
+        if (hits.isEmpty()) {
+            log.info("[KeywordMatch] articleId={} hits=0", article.getId());
+        } else {
+            var preview = hits.stream().toList();
+            log.info("[KeywordMatch] articleId={} totalHits={} sample={}",
+                    article.getId(), hits.size(), preview);
+        }
     }
 }
