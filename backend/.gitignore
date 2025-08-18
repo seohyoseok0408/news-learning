@@ -122,3 +122,15 @@ src/main/resources/application-prod.yml
 
 # 테스트 임시 디렉토리
 tmp/
+
+# ===============================
+# Eclipse / STS 관련 (추가)
+# ===============================
+.project
+.classpath
+.settings/
+.springBeans
+.sts4-cache/
+
+# Eclipse 빌드 산출물 (추가)
+bin/
