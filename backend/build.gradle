@@ -47,6 +47,9 @@ dependencies {
 	// Validation API
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	// Aho–Corasick 문자열 매칭 라이브러리
+	implementation 'org.ahocorasick:ahocorasick:0.6.3'
+
 	// 테스트용 의존성
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

@@ -22,7 +22,7 @@ public class ArticleRequestDTO {
 
     private String imageUrl;
     @NotBlank private String reporter;
-    @NotBlank private String sourceUrl;   // 중복 방지 키로 사용 권장
+    @NotBlank private String sourceUrl;  
     @NotBlank private String mediaName;
 
     @NotNull  private Category category;
@@ -32,6 +32,12 @@ public class ArticleRequestDTO {
     @NotNull @Size(min = 0)
     private List<HanjaBlock> hanjas;  // 버전별 한자와 그 한자에 속한 퀴즈들
 
+    // ===== Nouns (알림 매칭용, 비저장) =====
+    // 요청 바디에서만 받아 사용 후 폐기 (엔티티에 매핑 X)
+    @Builder.Default
+    @Size(min = 0, max = 200, message = "명사 리스트는 최대 200개까지 허용됩니다.")
+    private List<@NotBlank @Size(max = 50) String> nouns = List.of();
+
     @Getter @Setter
     @NoArgsConstructor @AllArgsConstructor @Builder
     public static class HanjaBlock {
@@ -40,7 +46,7 @@ public class ArticleRequestDTO {
         @NotBlank private String definition;
 
         @Builder.Default
-        private List<QuizBlock> quizzes = List.of(); // 선택
+        private List<QuizBlock> quizzes = List.of();
     }
 
     @Getter @Setter
