@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
     View,
     Text,
@@ -24,43 +24,118 @@ export default function HomeScreen() {
     const [newsData, setNewsData] = useState<NewsItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [loadingMore, setLoadingMore] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [hasNext, setHasNext] = useState(false);
+    const [nextCursor, setNextCursor] = useState<string | null>(null);
 
-    // 뉴스 데이터 로드
-    const loadNews = async (category: string = selectedCategory) => {
+    // 뉴스 데이터 로드 (초기 또는 새로고침)
+    const loadNews = async (category: string = selectedCategory, isRefresh: boolean = false) => {
         try {
-            setLoading(true);
+            if (isRefresh) {
+                setRefreshing(true);
+                setNextCursor(null);
+            } else {
+                setLoading(true);
+            }
             setError(null);
             
             console.log('🔵 선택된 카테고리:', category);
-            const news = await newsAPI.getNewsByCategory(category);
-            setNewsData(news);
-            console.log('✅ 로드된 뉴스 개수:', news.length);
+            const response = await newsAPI.getNewsByCategory(category);
+            
+            if (isRefresh) {
+                setNewsData(response.data.articles);
+            } else {
+                setNewsData(response.data.articles);
+            }
+            
+            setHasNext(response.data.hasNext);
+            setNextCursor(response.data.nextCursorPublishedAt);
+            console.log('✅ 로드된 뉴스 개수:', response.data.articles.length);
+            console.log('✅ 다음 페이지 존재:', response.data.hasNext);
+            console.log('✅ 다음 커서:', response.data.nextCursorPublishedAt);
         } catch (err) {
             console.error('뉴스 로드 실패:', err);
             setError('뉴스를 불러오는데 실패했습니다.');
         } finally {
             setLoading(false);
+            setRefreshing(false);
         }
     };
 
+    // 추가 뉴스 로드 (무한 스크롤)
+    const loadMoreNews = async () => {
+        if (loadingMore || !hasNext || !nextCursor) {
+            console.log('🔵 추가 로드 조건 확인:', { loadingMore, hasNext, nextCursor });
+            return;
+        }
+        
+        try {
+            setLoadingMore(true);
+            console.log('�� 추가 뉴스 로드 시작, 커서:', nextCursor);
+            
+            const response = await newsAPI.getNewsByCategory(selectedCategory, nextCursor);
+            
+            setNewsData(prev => [...prev, ...response.data.articles]);
+            setHasNext(response.data.hasNext);
+            setNextCursor(response.data.nextCursorPublishedAt);
+            
+            console.log('✅ 추가 뉴스 로드 완료, 총 개수:', newsData.length + response.data.articles.length);
+            console.log('✅ 다음 커서:', response.data.nextCursorPublishedAt);
+        } catch (err) {
+            console.error('추가 뉴스 로드 실패:', err);
+        } finally {
+            setLoadingMore(false);
+        }
+    };
+
+    // 스크롤 위치 감지 (무한 스크롤)
+    const handleScroll = useCallback((event: any) => {
+        const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+        const paddingToBottom = 100; // 하단에서 100px 떨어진 지점
+        
+        if (layoutMeasurement.height + contentOffset.y >= contentSize.height - paddingToBottom) {
+            loadMoreNews();
+        }
+    }, [hasNext, nextCursor, loadingMore]);
+
     // 새로고침
     const onRefresh = async () => {
-        setRefreshing(true);
-        await loadNews();
-        setRefreshing(false);
+        await loadNews(selectedCategory, true);
     };
 
     // 카테고리 변경 시 뉴스 로드
     const handleCategoryPress = async (category: string) => {
         console.log('🔵 카테고리 변경:', category);
         setSelectedCategory(category);
+        setNextCursor(null); // 카테고리 변경 시 커서 초기화
         await loadNews(category);
     };
 
     // 초기 데이터 로드
     useEffect(() => {
-        loadNews();
+        const loadInitialNews = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                
+                console.log('🔵 초기 뉴스 로드 시작');
+                const response = await newsAPI.getNewsByCategory('전체');
+                setNewsData(response.data.articles);
+                setHasNext(response.data.hasNext);
+                setNextCursor(response.data.nextCursorPublishedAt);
+                console.log('✅ 로드된 뉴스 개수:', response.data.articles.length);
+                console.log('✅ 다음 페이지 존재:', response.data.hasNext);
+                console.log('✅ 다음 커서:', response.data.nextCursorPublishedAt);
+            } catch (err) {
+                console.error('뉴스 로드 실패:', err);
+                setError('뉴스를 불러오는데 실패했습니다.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadInitialNews();
     }, []);
 
     return (
@@ -116,6 +191,8 @@ export default function HomeScreen() {
                         onRefresh={onRefresh}
                     />
                 }
+                onScroll={handleScroll}
+                scrollEventThrottle={16}
             >
                 {loading ? (
                     <View style={styles.loadingContainer}>
@@ -134,20 +211,37 @@ export default function HomeScreen() {
                         <Text style={styles.emptyText}>뉴스가 없습니다.</Text>
                     </View>
                 ) : (
-                    newsData.map((news) => (
-                        <NewsCard
-                            key={news.id}
-                            news={{
-                                id: news.id,
-                                category: news.category,
-                                title: news.title,
-                                author: news.reporter,
-                                timeAgo: getTimeAgo(news.publishedAt),
-                                date: formatDate(news.publishedAt),
-                                imageUrl: news.imageUrl
-                            }}
-                        />
-                    ))
+                    <>
+                        {newsData.map((news) => (
+                            <NewsCard
+                                key={news.id}
+                                news={{
+                                    id: news.id,
+                                    category: news.category,
+                                    title: news.title,
+                                    author: news.reporter,
+                                    timeAgo: getTimeAgo(news.publishedAt),
+                                    date: formatDate(news.publishedAt),
+                                    imageUrl: news.imageUrl
+                                }}
+                            />
+                        ))}
+                        
+                        {/* 추가 로딩 인디케이터 */}
+                        {loadingMore && (
+                            <View style={styles.loadingMoreContainer}>
+                                <ActivityIndicator size="small" color="#007AFF" />
+                                <Text style={styles.loadingMoreText}>뉴스를 더 불러오는 중...</Text>
+                            </View>
+                        )}
+                        
+                        {/* 더 이상 로드할 뉴스가 없음 */}
+                        {!hasNext && newsData.length > 0 && (
+                            <View style={styles.noMoreContainer}>
+                                <Text style={styles.noMoreText}>모든 뉴스를 불러왔습니다</Text>
+                            </View>
+                        )}
+                    </>
                 )}
             </ScrollView>
 

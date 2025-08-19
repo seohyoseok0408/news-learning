@@ -30,25 +30,15 @@ const CATEGORY_MAPPING: { [key: string]: string } = {
 };
 
 export const newsAPI = {
-    // 전체 뉴스 조회
-    getAllNews: async (): Promise<NewsItem[]> => {
-        try {
-            const response = await fetch(`${API_BASE_URL}/api/articles`);
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            const data: NewsResponse = await response.json();
-            return data.data.articles;
-        } catch (error) {
-            console.error('뉴스 조회 실패:', error);
-            throw error;
-        }
-    },
-
-    // 카테고리별 뉴스 조회
-    getNewsByCategory: async (category: string): Promise<NewsItem[]> => {
+    // 카테고리별 뉴스 조회 (커서 기반)
+    getNewsByCategory: async (category: string, cursorPublishedAt?: string): Promise<NewsResponse> => {
         try {
             let url: string;
+            const params = new URLSearchParams();
+            
+            if (cursorPublishedAt) {
+                params.append('cursorPublishedAt', cursorPublishedAt);
+            }
             
             if (category === '전체') {
                 url = `${API_BASE_URL}/api/articles`;
@@ -57,17 +47,22 @@ export const newsAPI = {
                 if (!backendCategory) {
                     throw new Error(`알 수 없는 카테고리: ${category}`);
                 }
-                url = `${API_BASE_URL}/api/articles?category=${backendCategory}`;
+                params.append('category', backendCategory);
+                url = `${API_BASE_URL}/api/articles`;
             }
             
-            console.log('🔵 API 요청 URL:', url);
+            if (params.toString()) {
+                url += `?${params.toString()}`;
+            }
+            
+            console.log('�� 카테고리별 뉴스 요청 URL:', url);
             
             const response = await fetch(url);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data: NewsResponse = await response.json();
-            return data.data.articles;
+            return data;
         } catch (error) {
             console.error('카테고리별 뉴스 조회 실패:', error);
             throw error;

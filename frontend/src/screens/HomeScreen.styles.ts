@@ -92,5 +92,28 @@ export default StyleSheet.create({
         fontSize: 16,
         color: '#666',
     },
+    loadingMoreContainer: {
+        padding: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    
+    loadingMoreText: {
+        marginTop: 10,
+        fontSize: 14,
+        color: '#666',
+    },
+    
+    noMoreContainer: {
+        padding: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    
+    noMoreText: {
+        fontSize: 14,
+        color: '#999',
+        fontStyle: 'italic',
+    },
     
 });
