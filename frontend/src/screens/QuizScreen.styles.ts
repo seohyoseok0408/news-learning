@@ -88,4 +88,88 @@ export default StyleSheet.create({
         backgroundColor: '#007AFF',
         borderRadius: 4,
     },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    modalContent: {
+        backgroundColor: '#ffffff',
+        borderRadius: 12,
+        padding: 24,
+        marginHorizontal: 20,
+        alignItems: 'center',
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+
+    modalTitle: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 16,
+        textAlign: 'center',
+    },
+
+    modalMessage: {
+        fontSize: 16,
+        color: '#666',
+        marginBottom: 24,
+        textAlign: 'center',
+    },
+
+    modalButton: {
+        backgroundColor: '#0080FF',
+        paddingHorizontal: 24,
+        paddingVertical: 12,
+        borderRadius: 8,
+    },
+
+    modalButtonText: {
+        color: '#ffffff',
+        fontSize: 16,
+        fontWeight: '600',
+    },
+
+    correctText: {
+        color: '#4CAF50',
+    },
+
+    incorrectText: {
+        color: '#F44336',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loadingText: {
+        fontSize: 16,
+        color: '#2B1B17',
+        fontWeight: '900',
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    emptyText: {
+        fontSize: 16,
+        color: '#2B1B17',
+        fontWeight: '900',
+    },
+    progressText: {
+        fontSize: 16,
+        color: '#2B1B17',
+        fontWeight: '900',
+        marginBottom: 15,
+        textAlign: 'left',
+    },
 });
