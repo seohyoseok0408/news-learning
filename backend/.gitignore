@@ -107,6 +107,7 @@ $RECYCLE.BIN/
 *.key
 *.pem
 
+
 # application 설정
 # application.yml 은 버전관리, dev/prod 등은 제외
 application-dev.yml
@@ -134,3 +135,6 @@ tmp/
 
 # Eclipse 빌드 산출물 (추가)
 bin/
+
+# 사용자 업로드 디렉토리 (추가)
+uploads/
