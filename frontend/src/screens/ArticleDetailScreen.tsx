@@ -179,7 +179,12 @@ export default function ArticleDetailScreen() {
     };
 
     const handleQuiz = () => {
-        navigation.navigate('Quiz');
+        if (article) {
+            navigation.navigate('Quiz', {
+                articleId: article.articleId,
+                version: currentSummaryLevel
+            });
+        }
     };
 
     const handleSave = () => {
