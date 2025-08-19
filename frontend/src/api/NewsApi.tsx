@@ -18,6 +18,41 @@ export interface NewsResponse {
     };
 }
 
+// 기사 상세 API 응답 타입 정의
+export interface HanjaWord {
+    id: number;
+    word: string;
+    definition: string;
+}
+
+export interface Summary {
+    content: string;
+    hanjaWords: HanjaWord[];
+}
+
+export interface ArticleDetail {
+    articleId: number;
+    title: string;
+    reporter: string;
+    mediaName: string;
+    imageUrl: string;
+    publishedAt: string;
+    summaries: {
+        ORIGINAL: Summary;
+        SHORT: Summary;
+        MIDDLE: Summary;
+    };
+    more: Array<{
+        id: number;
+        title: string;
+    }>;
+}
+
+export interface ArticleDetailResponse {
+    message: string;
+    data: ArticleDetail;
+}
+
 // 백엔드 카테고리 코드 매핑
 const CATEGORY_MAPPING: { [key: string]: string } = {
     '전체': 'ETC',
@@ -65,6 +100,31 @@ export const newsAPI = {
             return data;
         } catch (error) {
             console.error('카테고리별 뉴스 조회 실패:', error);
+            throw error;
+        }
+    },
+
+    // 기사 상세 조회
+    getArticleDetail: async (articleId: number): Promise<ArticleDetail> => {
+        try {
+            console.log('📡 getArticleDetail 함수 호출됨 - 기사 ID:', articleId, '시간:', new Date().toISOString());
+            
+            const url = `${API_BASE_URL}/api/articles/${articleId}`;
+            console.log(' 기사 상세 요청 URL:', url, '시간:', new Date().toISOString());
+            
+            const response = await fetch(url);
+            console.log('📡 기사 상세 응답 받음 - 상태:', response.status, '시간:', new Date().toISOString());
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data: ArticleDetailResponse = await response.json();
+            console.log('✅ 기사 상세 데이터 파싱 완료 - 제목:', data.data.title, '시간:', new Date().toISOString());
+            
+            return data.data;
+        } catch (error) {
+            console.error('❌ 기사 상세 조회 실패:', error, '시간:', new Date().toISOString());
             throw error;
         }
     }
