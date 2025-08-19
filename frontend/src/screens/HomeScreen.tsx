@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     View,
     Text,
@@ -6,44 +6,62 @@ import {
     TouchableOpacity,
     Image,
     SafeAreaView,
-    StatusBar
+    StatusBar,
+    ActivityIndicator,
+    RefreshControl
 } from 'react-native';
 import NewsCard from '../components/NewsCard';
 import CategoryTab from '../components/CategoryTab';
 import BottomNavigation from '../navigation/BottomNavigation';
+import { newsAPI, NewsItem } from '../api/NewsApi';
 import styles from './HomeScreen.styles';
 
-// 카테고리 데이터
-const categories = ['전체', '정치', '북한', '경제', '마켓', '산업', '사회', '전국', '세계', '문화', '건강', '연예', '스포츠', '오피니언'];
-
-// 뉴스 데이터 (임시)
-const newsData = [
-    {
-        id: 1,
-        category: '정치',
-        title: '[속보] 李대통령, 광주·무안 공항이전 갈등에 "대통령 실에 TF 구성"',
-        author: '임형섭 기자',
-        timeAgo: '8시간 전',
-        date: '2025/07/03',
-        imageUrl: require('../../assets/images/samples/sample-news-image2.png')
-    },
-    {
-        id: 2,
-        category: '스포츠',
-        title: '이정후, 4경기 만의 안타로 부진 탈출 신호탄...볼넷 도 1개 골라',
-        author: '송고 기자',
-        timeAgo: '14시간 전',
-        date: '2025/07/03',
-        imageUrl: require('../../assets/images/samples/sample-news-image.png')
-    }
-];
+// 카테고리 데이터 (백엔드와 매핑)
+const categories = ['전체', '정치', '경제', '사회', '연예', '국제', '스포츠'];
 
 export default function HomeScreen() {
     const [selectedCategory, setSelectedCategory] = useState('전체');
+    const [newsData, setNewsData] = useState<NewsItem[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false);
+    const [error, setError] = useState<string | null>(null);
 
-    const handleCategoryPress = (category: string) => {
-        setSelectedCategory(category);
+    // 뉴스 데이터 로드
+    const loadNews = async (category: string = selectedCategory) => {
+        try {
+            setLoading(true);
+            setError(null);
+            
+            console.log('🔵 선택된 카테고리:', category);
+            const news = await newsAPI.getNewsByCategory(category);
+            setNewsData(news);
+            console.log('✅ 로드된 뉴스 개수:', news.length);
+        } catch (err) {
+            console.error('뉴스 로드 실패:', err);
+            setError('뉴스를 불러오는데 실패했습니다.');
+        } finally {
+            setLoading(false);
+        }
     };
+
+    // 새로고침
+    const onRefresh = async () => {
+        setRefreshing(true);
+        await loadNews();
+        setRefreshing(false);
+    };
+
+    // 카테고리 변경 시 뉴스 로드
+    const handleCategoryPress = async (category: string) => {
+        console.log('🔵 카테고리 변경:', category);
+        setSelectedCategory(category);
+        await loadNews(category);
+    };
+
+    // 초기 데이터 로드
+    useEffect(() => {
+        loadNews();
+    }, []);
 
     return (
         <SafeAreaView style={styles.container}>
@@ -92,17 +110,71 @@ export default function HomeScreen() {
             <ScrollView
                 style={styles.newsContainer}
                 showsVerticalScrollIndicator={false}
-            >
-                {newsData.map((news) => (
-                    <NewsCard
-                        key={news.id}
-                        news={news}
+                refreshControl={
+                    <RefreshControl
+                        refreshing={refreshing}
+                        onRefresh={onRefresh}
                     />
-                ))}
+                }
+            >
+                {loading ? (
+                    <View style={styles.loadingContainer}>
+                        <ActivityIndicator size="large" color="#007AFF" />
+                        <Text style={styles.loadingText}>뉴스를 불러오는 중...</Text>
+                    </View>
+                ) : error ? (
+                    <View style={styles.errorContainer}>
+                        <Text style={styles.errorText}>{error}</Text>
+                        <TouchableOpacity style={styles.retryButton} onPress={() => loadNews()}>
+                            <Text style={styles.retryButtonText}>다시 시도</Text>
+                        </TouchableOpacity>
+                    </View>
+                ) : newsData.length === 0 ? (
+                    <View style={styles.emptyContainer}>
+                        <Text style={styles.emptyText}>뉴스가 없습니다.</Text>
+                    </View>
+                ) : (
+                    newsData.map((news) => (
+                        <NewsCard
+                            key={news.id}
+                            news={{
+                                id: news.id,
+                                category: news.category,
+                                title: news.title,
+                                author: news.reporter,
+                                timeAgo: getTimeAgo(news.publishedAt),
+                                date: formatDate(news.publishedAt),
+                                imageUrl: news.imageUrl
+                            }}
+                        />
+                    ))
+                )}
             </ScrollView>
 
             {/* 하단 네비게이션 */}
             <BottomNavigation currentTab="articles" />
         </SafeAreaView>
     );
+}
+
+// 유틸리티 함수들
+function getTimeAgo(publishedAt: string): string {
+    const now = new Date();
+    const published = new Date(publishedAt);
+    const diffInHours = Math.floor((now.getTime() - published.getTime()) / (1000 * 60 * 60));
+    
+    if (diffInHours < 1) return '방금 전';
+    if (diffInHours < 24) return `${diffInHours}시간 전`;
+    
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `${diffInDays}일 전`;
+}
+
+function formatDate(publishedAt: string): string {
+    const date = new Date(publishedAt);
+    return date.toLocaleDateString('ko-KR', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
 }

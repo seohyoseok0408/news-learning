@@ -38,8 +38,8 @@ public class SecurityConfig {
 		// 경로별 인가 작업
 		.authorizeHttpRequests((auth) -> auth
 				.requestMatchers("/social-login", "/reissue").permitAll()
-				.requestMatchers("/user").hasRole("USER")
-				.anyRequest().authenticated());
+				.requestMatchers("/user").permitAll()
+				.anyRequest().permitAll());
 		// 소셜로그인 필터 추가(소셜로그인 및 회원가입까지)
 		http
 		.addFilterBefore(socialLoginFilter,
