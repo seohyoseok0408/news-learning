@@ -112,10 +112,7 @@ export default StyleSheet.create({
         paddingHorizontal: 20,
         paddingBottom: 10,
     },
-    articleContent: {
-        fontSize: 16,
-        color: '#2B1B17',
-        lineHeight: 24,
+    articleContainer: {
         paddingHorizontal: 20,
         paddingBottom: 30,
         borderWidth: 4,
@@ -125,21 +122,23 @@ export default StyleSheet.create({
         backgroundColor: '#FFFFFF',
         marginHorizontal: 15,
         marginBottom: 20,
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignContent: 'flex-start',
+    },
+    articleText: {
+        fontSize: 16,
+        color: '#2B1B17',
+        lineHeight: 24,
         fontWeight: '600',
     },
-    articleContentContainer: {
-        paddingHorizontal: 20,
-        marginBottom: 30,
-    },
     highlightedWord: {
+        fontSize: 16,
         color: '#0080FF',
         textDecorationLine: 'underline',
         fontWeight: '600',
-        backgroundColor: '#E3F2FD',
-        paddingHorizontal: 4,
-        paddingVertical: 2,
-        borderRadius: 4,
-        marginHorizontal: 2,
+        lineHeight: 0,
+
     },
     relatedSection: {
         paddingHorizontal: 20,
@@ -173,5 +172,131 @@ export default StyleSheet.create({
         backgroundColor: '#7B7B7B',
         marginHorizontal: 0,
         marginBottom: 20,
+    },
+    hanjaSection: {
+        marginBottom: 20,
+    },
+    hanjaTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 15,
+        color: '#333',
+    },
+    hanjaItem: {
+        marginBottom: 15,
+        padding: 15,
+        backgroundColor: '#F8F9FA',
+        borderRadius: 8,
+    },
+    hanjaWord: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#007AFF',
+        marginBottom: 5,
+    },
+    hanjaDefinition: {
+        fontSize: 14,
+        color: '#666',
+        lineHeight: 20,
+    },
+    errorContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    errorText: {
+        fontSize: 16,
+        color: '#FF3B30',
+        textAlign: 'center',
+        marginBottom: 20,
+    },
+    retryButton: {
+        backgroundColor: '#007AFF',
+        paddingHorizontal: 20,
+        paddingVertical: 12,
+        borderRadius: 8,
+    },
+    retryButtonText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: '500',
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    loadingText: {
+        marginTop: 15,
+        fontSize: 16,
+        color: '#666',
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    modalContent: {
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        padding: 0,
+        width: '85%',
+        maxWidth: 350,
+        shadowColor: '#000',
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+        elevation: 8,
+    },
+
+    modalHeader: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 20,
+        paddingBottom: 15,
+    },
+
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#007AFF',
+        flex: 1,
+    },
+
+    closeButton: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        backgroundColor: '#007AFF',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    closeButtonText: {
+        fontSize: 14,
+        color: '#fff',
+        fontWeight: 'bold',
+    },
+
+    modalBody: {
+        paddingHorizontal: 20,
+        paddingBottom: 20,
+    },
+
+    modalDefinition: {
+        fontSize: 14,
+        lineHeight: 20,
+        color: '#333',
+        marginTop: 5,
+    },
+    highlightedWordContainer: {
+        alignSelf: 'baseline',
     },
 });
